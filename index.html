@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasus Perceraian Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="text-center mb-4">Kasus Perceraian Prediksi di Indonesia</h1>
+
+        <!-- Tabel Data Kasus Perceraian -->
+        <div class="mb-5">
+            <h3 class="text-center">Kasus Perceraian Data</h3>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Kasus Perceraian</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2019</td>
+                        <td>438,013</td>
+                    </tr>
+                    <tr>
+                        <td>2020</td>
+                        <td>419,677</td>
+                    </tr>
+                    <tr>
+                        <td>2021</td>
+                        <td>477,743</td>
+                    </tr>
+                    <tr>
+                        <td>2022</td>
+                        <td>448,128</td>
+                    </tr>
+                    <tr>
+                        <td>2023</td>
+                        <td>408,347</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Form Prediksi -->
+        <div class="row">
+            <!-- Left Form: Flexible Total Prediction for any time range -->
+            <div class="col-md-6">
+                <div class="mb-5">
+                    <h3 class="text-center">Total Kasus Perceraian dengan Tenggat Waktu</h3>
+                    <form id="rangePredictionForm">
+                        <div class="mb-3">
+                            <label for="startYearInput" class="form-label">Tahun Awal:</label>
+                            <input type="number" class="form-control" id="startYearInput" required min="2019">
+                        </div>
+                        <div class="mb-3">
+                            <label for="endYearInput" class="form-label">Tahun Akhir:</label>
+                            <input type="number" class="form-control" id="endYearInput" required min="2019">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Hitung Total Kasus Perceraian</button>
+                    </form>
+                    <p id="totalRangeResult" class="text-center lead mt-4">Total Kasus Perceraian: </p>
+                </div>
+            </div>
+
+            <!-- Right Form: Prediction for Specific Year -->
+            <div class="col-md-6">
+                <div class="mb-5">
+                    <h3 class="text-center">Prediksi Kasus Perceraian Tahun Mendatang</h3>
+                    <form id="predictionForm">
+                        <div class="mb-3">
+                            <label for="yearInput" class="form-label">Tahun yang Ingin Diprediksi:</label>
+                            <input type="number" class="form-control" id="yearInput" required min="2019">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Prediksi Kasus Perceraian</button>
+                    </form>
+                    <p id="result" class="text-center lead mt-4">Total Kasus Perceraian: </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const m = -7416.5;
+        const adjusted_b = 488925;
+        const baseYear = 2019;
+        const original_b = 438013;
+        function predictDivorceCases(year, b_value) {
+            const t = year - baseYear;
+            return m * t + b_value;
+        }
+        function calculateTotalDivorceCasesRange(startYear, endYear) {
+            let totalCases = 0;
+            for (let year = startYear; year <= endYear; year++) {
+                totalCases += predictDivorceCases(year, adjusted_b);
+            }
+            return totalCases;
+        }
+        document.getElementById('rangePredictionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const startYear = parseInt(document.getElementById('startYearInput').value);
+            const endYear = parseInt(document.getElementById('endYearInput').value);
+
+            if (startYear >= 2019 && endYear >= startYear) {
+                const totalCases = calculateTotalDivorceCasesRange(startYear, endYear).toFixed(0);
+                document.getElementById('totalRangeResult').textContent = `Total Kasus Perceraian dari ${startYear} hingga ${endYear}: ${totalCases}`;
+            } else {
+                document.getElementById('totalRangeResult').textContent = "Masukkan tahun yang valid (tahun awal >= 2019 dan tahun akhir >= tahun awal).";
+            }
+        });
+        document.getElementById('predictionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const yearInput = document.getElementById('yearInput').value;
+            const year = parseInt(yearInput);
+
+            if (year >= 2019) {
+                const prediction = predictDivorceCases(year, original_b).toFixed(0);
+                document.getElementById('result').textContent = `Prediksi Kasus Perceraian pada tahun ${year}: ${prediction}`;
+            } else {
+                document.getElementById('result').textContent = "Masukkan tahun yang valid (>= 2019).";
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
